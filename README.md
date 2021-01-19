@@ -4,9 +4,10 @@ To run the vanilla code, at first clone the #PlantDoc dataset from the [reposito
 
 
 
-
+## Running Configuration:
 `{'name': 'plant-doc', 'dataset_path': '/home/redwan/PlantDoc-Dataset', 'device': 'cuda:0', 'batch_size': 16, 'img_size': 512, 'box_size': 512, 'epochs': 20}`
-
+## Terminal Log: 
+`
 2342 labeled training images found!
 237 labeled testing images found!
 Epoch 0/19
@@ -110,4 +111,4 @@ train Loss: 0.7048 Acc: 0.7788
 val Loss: 1.1684 Acc: 0.6076
 
 Training complete in 7m 52s
-Best val Acc: 0.662447
+Best val Acc: 0.662447`
