@@ -1,6 +1,12 @@
 # PlantDoc-Experiments
+To run the vanilla code, at first clone the #PlantDoc dataset from the [repository](https://github.com/pratikkayal/PlantDoc-Dataset) and change value of `dataset_path:` variable in the `configs/vanilla.yaml` file. Then run the follwing command in linux terminal. Make sure that you have a working installation of PyTorch in your python environment.  
+`python "/home/redwan/PlantDoc Leaf Disease Classification/train.py" --config configs/vanilla.yaml`
 
-{'name': 'plant-doc', 'dataset_path': '/home/redwan/PlantDoc-Dataset', 'device': 'cuda:0', 'batch_size': 16, 'img_size': 512, 'box_size': 512, 'epochs': 20}
+
+
+
+`{'name': 'plant-doc', 'dataset_path': '/home/redwan/PlantDoc-Dataset', 'device': 'cuda:0', 'batch_size': 16, 'img_size': 512, 'box_size': 512, 'epochs': 20}`
+
 2342 labeled training images found!
 237 labeled testing images found!
 Epoch 0/19
