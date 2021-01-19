@@ -1,0 +1,10 @@
+name: 'plant-doc'
+dataset_path: '/home/redwan/PlantDoc-Dataset'
+device: 'cuda:0'
+
+batch_size: 16
+img_size: 512
+box_size: 512
+
+
+epochs: 20
