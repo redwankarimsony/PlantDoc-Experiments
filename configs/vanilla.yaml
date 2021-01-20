@@ -1,10 +1,17 @@
-name: 'plant-doc'
+name: 'plant-doc-vanilla'
+n_class: 28
 dataset_path: '/home/redwan/PlantDoc-Dataset'
 device: 'cuda:0'
 
-batch_size: 16
+
+
+batch_size: 64
+momentum: 0.9
 img_size: 512
 box_size: 512
 
 
-epochs: 20
+lr: 0.001
+optimizer: 'adam'
+
+epochs: 30

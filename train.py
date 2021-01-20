@@ -1,4 +1,5 @@
 import os, argparse, yaml, time, copy
+import pandas as pd
 import albumentations
 
 import torch
@@ -17,6 +18,9 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+    train_acc, val_acc = [], []
+    train_loss, val_loss = [], []
+
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -63,18 +67,27 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
+            if phase=='train':
+                train_acc.append(epoch_acc.cpu().detach().numpy())
+                train_loss.append(epoch_loss)
+            else:
+                val_acc.append(epoch_acc.cpu().detach().numpy())
+                val_loss.append(epoch_loss)
 
             # deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-        print()
+        
 
     time_elapsed = time.time() - since
-    print('Training complete in {:.0f}m {:.0f}s'.format(
-        time_elapsed // 60, time_elapsed % 60))
+    print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
     print('Best val Acc: {:4f}'.format(best_acc))
+
+    pd.DataFrame({'train_acc':train_acc, 'val_acc': val_acc,
+                'train_loss': train_loss, 'val_loss': val_loss}).to_csv('logs/run_log.csv', index=False)
+    
 
     # load best model weights
     model.load_state_dict(best_model_wts)
@@ -85,7 +98,7 @@ def main(config):
     train_data = ImageFolder(config['dataset_path'], split = 'Train', augment = True)
     print(f'{len(train_data)} labeled training images found!' )
 
-    test_data = ImageFolder(config['dataset_path'], split = 'Test', augment = True)
+    test_data = ImageFolder(config['dataset_path'], split = 'Test', augment = False)
     print(f'{len(test_data)} labeled testing images found!' )
     dataset_sizes = {'train': len(train_data), 'val': len(test_data)}
 
@@ -102,15 +115,17 @@ def main(config):
     num_ftrs = model_ft.fc.in_features
     # Here the size of each output sample is set to 2.
     # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
-    model_ft.fc = nn.Linear(num_ftrs, 28)
+    model_ft.fc = nn.Linear(num_ftrs, config['n_class'])
 
     model_ft = model_ft.to(device)
 
     criterion = nn.CrossEntropyLoss()
 
-    # Observe that all parameters are being optimized
-    optimizer_ft = optim.SGD(model_ft.parameters(), lr=0.001, momentum=0.9)
-
+    if config['optimizer'] == 'adam':
+        optimizer_ft = optim.Adam(model_ft.parameters(), lr=config['lr'])
+    else:
+        optimizer_ft = optim.SGD(model_ft.parameters(), lr=config['lr'], momentum=config['momentum'])
+   
     # Decay LR by a factor of 0.1 every 7 epochs
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
     

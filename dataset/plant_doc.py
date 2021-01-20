@@ -30,6 +30,9 @@ class ImageFolder(Dataset):
         if kwargs.get('augment'):
             self.transform = transforms.Compose([transforms.RandomResizedCrop(image_size),
                                                  transforms.RandomHorizontalFlip(),
+                                                 transforms.RandomVerticalFlip(),
+                                                 transforms.RandomRotation(10),
+                                                 transforms.RandomErasing(p=0.4),
                                                  transforms.ToTensor(),
                                                  normalize])
         else:
