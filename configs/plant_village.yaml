@@ -1,0 +1,17 @@
+name: 'plant-village-vanilla'
+n_class: 38
+dataset_path: '/home/redwan/plant_village_raw'
+device: 'cuda:0'
+
+
+
+batch_size: 64
+momentum: 0.9
+img_size: 512
+box_size: 512
+
+
+lr: 0.001
+optimizer: 'adam'
+
+epochs: 10
